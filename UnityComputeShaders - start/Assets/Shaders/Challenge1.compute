@@ -6,16 +6,25 @@
 RWTexture2D<float4> Result;
 //Create a float4 to hold the rectangle that defines the square
 
+int texResolution;
+
 //Return 1 if pt is in the rect parameter and 0 otherwise
-float inSquare( float2 pt, float4 rect ){
-    return 0.0;
+float inSquare( float2 pt, float4 rect )
+{
+    float2 ne = step(pt, rect.xy);
+    float2 sw = step(pt, rect.zw);
+
+    float2 pct = ne - sw;
+    return pct.x * pct.y;
 }
 
 [numthreads(8,8,1)]
 void Square (uint3 id : SV_DispatchThreadID)
 {
 	//Call the inSquare function to set res
-    float res = 0;
+    int2 center = texResolution >> 1;
+    int2 quarter = (texResolution >> 2).xx;
+    float res = inSquare(float2(id.xy), float4(center + quarter, center - quarter));
 
     Result[id.xy] = float4(0.0, 0.0, res, 1.0);
 }

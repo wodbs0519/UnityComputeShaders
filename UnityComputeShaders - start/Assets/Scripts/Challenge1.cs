@@ -33,7 +33,7 @@ public class Challenge1 : MonoBehaviour
         //Pass this to the shader using SetVector
         
         shader.SetTexture(kernelHandle, "Result", outputTexture);
-       
+        shader.SetInt("texResolution", texResolution);
         rend.material.SetTexture("_MainTex", outputTexture);
 
         DispatchShader(texResolution / 8, texResolution / 8);
